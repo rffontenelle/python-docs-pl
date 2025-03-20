@@ -53,11 +53,6 @@ jobs:
       - run: git add .
       - run: git commit -m 'Update translation from Transifex'
         if: env.SIGNIFICANT_CHANGES
-      - uses: ad-m/github-push-action@master
-        if: env.SIGNIFICANT_CHANGES
-        with:
-          branch: ${{ matrix.version }}
-          github_token: ${{ secrets.GITHUB_TOKEN }}
 
   lint:
     runs-on: ubuntu-latest
@@ -103,6 +98,8 @@ jobs:
       - run: git pull
         working-directory: ./Doc/locales/pl/LC_MESSAGES
       - uses: sphinx-doc/github-problem-matcher@v1.1
+      - run: PATH=Doc/venv/bin:$$PATH blurb help >/dev/null 2>&1
+      - run: PATH=Doc/venv/bin:$$PATH sphinx-build --version >/dev/null 2>&1;
       - run: make -e SPHINXOPTS="--color -D language='pl' -W --keep-going" ${{ matrix.format }}
         working-directory: ./Doc
       - uses: actions/upload-artifact@master
